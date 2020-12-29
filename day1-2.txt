@@ -1,0 +1,11 @@
+for(let i = 0; i < realNumbers.length; i++){
+    for(let j = i + 1; j < realNumbers.length; j++){
+        for(let k = j; k < realNumbers.length; k++){
+            if(realNumbers[i] + realNumbers[j] + realNumbers[k] === 2020){
+                console.log(realNumbers[i] * realNumbers[j] * realNumbers[k]);
+            }
+        }
+    }
+}
+VM1429:5 171933104
+undefined

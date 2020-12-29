@@ -1,0 +1,213 @@
+<head>
+    <script>
+        let input = 
+`114
+51
+122
+26
+121
+90
+20
+113
+8
+138
+57
+44
+135
+76
+134
+15
+21
+119
+52
+118
+107
+99
+73
+72
+106
+41
+129
+83
+19
+66
+132
+56
+32
+79
+27
+115
+112
+58
+102
+64
+50
+2
+39
+3
+77
+85
+103
+140
+28
+133
+78
+34
+13
+61
+25
+35
+89
+40
+7
+24
+33
+96
+108
+71
+11
+128
+92
+111
+55
+80
+91
+31
+70
+101
+14
+18
+12
+4
+84
+125
+120
+100
+65
+86
+93
+67
+139
+1
+47
+38`;
+//  input = `28
+// 33
+// 18
+// 42
+// 31
+// 14
+// 46
+// 20
+// 48
+// 47
+// 24
+// 23
+// 49
+// 45
+// 19
+// 38
+// 39
+// 11
+// 1
+// 32
+// 25
+// 35
+// 8
+// 17
+// 7
+// 9
+// 4
+// 2
+// 34
+// 10
+// 3`;
+// input = `16
+// 10
+// 15
+// 5
+// 1
+// 11
+// 7
+// 19
+// 6
+// 12
+// 4`;
+
+
+const part1 = (numbers) => {
+    numbers.sort((a,b) => a - b);
+    let prev = 0;
+    let oneUps = 0;
+    let threeUps = 0;
+    for(let i = 0; i < numbers.length; i++){
+        const thisNum = numbers[i];
+                console.log(prev + ' vs ' + thisNum);
+
+        if(thisNum > prev + 3){
+            break; // no more connections!
+        }
+        if(thisNum === prev + 1){
+            oneUps++;
+        } else if(thisNum === prev + 3){
+            threeUps++;
+        }
+        prev = thisNum;
+    }
+    // Final output:
+    threeUps++;
+    return oneUps * threeUps;
+}
+
+const countConnectionOptions = (startingFrom, options, end) => {
+    const stepCountToEnd = new Map();
+    for(let start = end; start >= startingFrom; start--){
+        const stepsFromStart = options.get(start);
+        if(!stepsFromStart || stepsFromStart.length === 0){
+            stepCountToEnd.set(start, 1);
+        } else {
+            let total = 0;
+            stepsFromStart.forEach((step) => {
+                total += stepCountToEnd.get(step);
+            });
+            stepCountToEnd.set(start, total);
+        }
+        
+    }
+    return stepCountToEnd.get(startingFrom);
+}
+
+const part2 = (numbers) => {
+    numbers.sort((a, b) => a - b);
+    const connectionOptions = new Map();
+    const firstSteps = [];
+    for(let x = 0; x < 4; x++){
+        if(numbers[x] <= 3){
+            firstSteps.push(x);
+        }
+    }
+    connectionOptions.set(-1, firstSteps);
+    for(let i = 0; i < numbers.length; i++){
+        const options = [];
+        for(let j = i + 1; j < i + 4; j++){
+            if(numbers[j] <= numbers[i] + 3){
+                options.push(j);
+            }
+        }
+        connectionOptions.set(i, options);
+    }
+    return countConnectionOptions(-1, connectionOptions, numbers.length - 1);
+}
+
+    
+const allNums = input.split('\n').map((entry) => parseInt(entry.trim(), 10))
+console.log(part1(allNums));
+
+console.log(part2(allNums));
+
+
+
+    
+    </script>
+</head>
+<body></body>

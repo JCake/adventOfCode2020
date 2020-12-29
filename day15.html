@@ -1,0 +1,35 @@
+<head>
+    <script>
+        let input = [6, 4, 12, 1, 20, 0, 16];
+
+
+const calc = (numbers, index) => {
+    console.log(numbers);
+    const map = new Map();
+    for(let x = 0; x < numbers.length - 1; x++){
+        map.set(numbers[x], x);
+    }
+    console.log(map);
+    for(let i = numbers.length - 1; i < index; i++){
+        const prevNum = numbers[i];
+        const earlierIndex = map.get(prevNum);
+        if(earlierIndex === undefined){
+            numbers.push(0);
+        } else {
+            numbers.push(i - earlierIndex);
+        }
+        map.set(prevNum, i);
+    }
+    return numbers[index - 1];
+}
+
+console.log(calc(input, 30000000));
+
+
+
+
+
+    
+    </script>
+</head>
+<body></body>

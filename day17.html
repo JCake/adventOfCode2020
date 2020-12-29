@@ -1,0 +1,144 @@
+<head>
+    <script>
+        let input = `..##.##.
+#.#..###
+##.#.#.#
+#.#.##.#
+###..#..
+.#.#..##
+#.##.###
+#.#..##.`;
+
+// input = `.#.
+// ..#
+// ###`;
+
+
+//w, z, y, x
+let grid = new Map();
+const z0Map = new Map();
+const w0Map = new Map();
+w0Map.set(0, z0Map);
+grid.set(0, w0Map);
+const twoDGrid = input.split('\n').map((row) => row.trim().split(''));
+
+twoDGrid.forEach((row, rIndex) => {
+    const colsMap = new Map();
+    row.forEach((col, cIndex) => {
+        if(col === '#'){
+            colsMap.set(cIndex, true);
+        }
+    })
+    z0Map.set(rIndex, colsMap);
+});
+console.log(grid);
+
+const countNearby = (grid, w, z, y, x) => {
+    let count = 0;
+    for (let wi = w - 1; wi <= w + 1; wi++){
+        const gridw = grid.get(wi);
+        if(gridw){
+            for (let zi = z - 1; zi <= z + 1; zi++) {
+                const gridz = gridw.get(zi);
+                if (gridz) {
+                    for (let yi = y - 1; yi <= y + 1; yi++) {
+                        const gridzy = gridz.get(yi);
+                        if (gridzy) {
+                            for (let xi = x - 1; xi <= x + 1; xi++) {
+                                if (!(wi === w && zi === z && yi === y && xi === x) && gridzy.get(xi)) {
+                                    count += 1;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    return count;
+}
+
+for(let step = 0; step < 6; step++){
+    const minW = Math.min(...grid.keys()) - 1;
+    const maxW = Math.max(...grid.keys()) + 1;
+
+    let minZs = [];
+    let maxZs = [];
+    let minYs = [];
+    let maxYs = [];
+    let minXs = [];
+    let maxXs = [];
+    grid.forEach((zMap) => {
+        minZs.push(Math.min(...zMap.keys()) - 1);
+        maxZs.push(Math.max(...zMap.keys()) + 1);
+        zMap.forEach((yMap) => {
+            minYs.push(Math.min(...yMap.keys()) - 1);
+            maxYs.push(Math.max(...yMap.keys()) + 1);
+            yMap.forEach((xMap) => {
+                minXs.push(Math.min(...xMap.keys()) - 1);
+                maxXs.push(Math.max(...xMap.keys()) + 1);
+            });
+        });
+    })
+    
+
+    const minZ = Math.min(...minZs);
+    const maxZ = Math.max(...maxZs);
+    const minY = Math.min(...minYs);
+    const maxY = Math.max(...maxYs);
+    const minX = Math.min(...minXs);
+    const maxX = Math.max(...maxXs);
+
+    let newGrid = new Map();
+    for(let w = minW; w <= maxW; w++){
+        for (let z = minZ; z <= maxZ; z++) {
+            for (let y = minY; y <= maxY; y++) {
+                for (let x = minX; x <= maxX; x++) {
+                    const count = countNearby(grid, w, z, y, x);
+                    if (count === 3 || (count === 2 && 
+                    grid.get(w) && grid.get(w).get(z) && grid.get(w).get(z).get(y) && grid.get(w).get(z).get(y).get(x))) {
+                        let gridw = newGrid.get(w);
+                        if(!gridw) {
+                            gridw = new Map();
+                            newGrid.set(w, gridw);
+                        }
+                        let gridz = gridw.get(z);
+                        if (!gridz) {
+                            gridz = new Map();
+                            gridw.set(z, gridz);
+                        }
+                        let gridy = gridz.get(y);
+                        if (!gridy) {
+                            gridy = new Map();
+                            gridz.set(y, gridy);
+                        }
+                        gridy.set(x, true);
+                    }
+                }
+            }
+        }
+    }
+    
+    grid = newGrid;
+}
+
+let finalCount = 0;
+grid.forEach(gridw => {
+    gridw.forEach(gridz => {
+        gridz.forEach(gridy => {
+            gridy.forEach(gridx => {
+                if (gridx) {
+                    finalCount++;
+                }
+            })
+        })
+    });
+})
+
+console.log(finalCount);
+    
+    </script>
+</head>
+<body></body>

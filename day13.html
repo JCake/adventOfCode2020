@@ -1,0 +1,130 @@
+<head>
+    <script>
+    let earliestTime = 1000052;
+    let buses = `23,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,37,x,x,x,x,x,863,x,x,x,x,x,x,x,x,x,x,x,19,13,x,x,x,17,x,x,x,x,x,x,x,x,x,x,x,29,x,571,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,x,41`;
+    // earliestTime = 939;
+    // buses = '7,13,x,x,59,x,31,19';
+    
+    // Part 1
+    let earliestPossible = 999999999999;
+    let bestBus = 0;
+    buses.split(',').filter((bus) => bus !== 'x').forEach((bus) => {
+        const busNum = parseInt(bus);
+        const departTime = Math.ceil(earliestTime / busNum) * busNum;
+        if(departTime < earliestPossible){
+            earliestPossible = departTime;
+            bestBus = busNum;
+        }
+    });
+    console.log((earliestPossible - earliestTime) * bestBus);
+
+    // Part 2
+    // t + i = buses[i] * xi for all buses[i] such that buses[i] !== 'x'
+
+    // stealind from https://stackoverflow.com/questions/31302054/how-to-find-the-least-common-multiple-of-a-range-of-numbers
+     gcd = (a, b) => {
+        return !b ? a : gcd(b, a % b);
+    }
+
+    lcm = (a, b) => {
+        return (a * b) / gcd(a, b);
+    }
+
+    overallLCM = (arr) => {
+        var multiple = arr[0];
+        for(let i = 1; i < arr.length; i++){
+            multiple = lcm(multiple, arr[i]);
+        };
+        return multiple;
+    }
+
+
+
+    // let part2 = (buses, start, max) => {
+    //     const busToTimes = new Map();
+    //buses = `17,x,13,19`;
+    const calculate = (start) => {
+
+        let possibleFactors = [];
+        
+        while(possibleFactors.length === 0){
+            const busNumbers = buses.split(',');
+            const busWithIndex = []
+            for (let i = 0; i < busNumbers.length; i++) {
+                if (busNumbers[i] !== 'x') {
+                    busWithIndex.push({ bus: parseInt(busNumbers[i]), index: i });
+                }
+            }
+            console.log(busWithIndex);
+
+            possibleFactors = [];
+            let bus1 = busWithIndex[0];
+            let bus2 = busWithIndex[1];
+
+            let a = start;
+            while (possibleFactors.length < 1000000) {
+                if ((bus1.bus * a + bus2.index) % bus2.bus === 0) {
+                    possibleFactors.push(a);
+                }
+                a++;
+            }
+            const maxConsidered = possibleFactors[possibleFactors.length - 1];
+            console.log(maxConsidered);
+
+            for (let i = 2; i < busWithIndex.length && possibleFactors.length > 0; i++) {
+                bus2 = busWithIndex[i];
+                // solve bus1.bus * a + bus1.index = bus2.bus * b + bus2.index
+                // bus1.bus * a - bus2.bus * b = bus1.index + bus2.index
+                possibleFactors = possibleFactors.filter((factor) => (bus1.bus * factor + bus2.index) % bus2.bus === 0);
+            }
+            start = maxConsidered + 1;
+        }
+        
+        console.log(Math.min(...possibleFactors) * bus1.bus);
+        return Math.min(...possibleFactors) * bus1.bus;
+
+    }
+
+    console.log(calculate(27174995999975)); // determined its at least this big
+        
+
+       
+            
+
+    //     const largestBus = Math.max(...busNumbers.filter(bus => bus !== 'x').map(bus => parseInt(bus)));
+    //     const considerationPoints = Array.from(busToTimes.get(largestBus));
+    //     const largestBusOffset = busToIndex.get(largestBus);
+
+    //     let found = false;
+    //     for (let i = 0; i < considerationPoints.length && !found; i++) {
+    //         const possibleTime = considerationPoints[i];
+    //         //console.log('checking ' + (possibleTime - largestBusOffset));
+    //         found = true;
+    //         busToIndex.forEach((index, bus) => {
+    //             found = found && busToTimes.get(bus).has(possibleTime + index - largestBusOffset);
+    //         });
+
+    //         if (found) {
+    //             console.log(possibleTime - largestBusOffset);
+    //             return possibleTime - largestBusOffset;
+    //         }
+    //     }
+    //     console.log('not found');
+    //     return 0;
+    // }
+
+    // let start = 620168260000000;
+    // let increment = 50000000;
+    // // buses = '1789,37,47,1889';
+    // let foundVal = 0;
+    // while(!foundVal){
+    //     start += increment;
+    //     console.log(start);
+    //     foundVal = part2(buses, start, start + increment);
+    // }
+
+  
+    
+    </script>
+</head>
+<body></body>
